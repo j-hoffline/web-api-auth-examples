@@ -13,9 +13,9 @@ var cors = require('cors');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
-var client_id = 'CLIENT_ID'; // Your client id
-var client_secret = 'CLIENT_SECRET'; // Your secret
-var redirect_uri = 'REDIRECT_URI'; // Your redirect uri
+var client_id = process.env.SPOTIFY_CLIENT_ID; // Your client id
+var client_secret = process.env.SPOTIFY_CLIENT_SECRET; // Your secret
+var redirect_uri = process.env.REDIRECT_URI; // Your redirect uri
 
 /**
  * Generates a random string containing numbers and letters
@@ -50,9 +50,9 @@ app.get('/login', function(req, res) {
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
-      client_id: client_id,
+      client_id: process.env.SPOTIFY_CLIENT_ID,
       scope: scope,
-      redirect_uri: redirect_uri,
+      redirect_uri: process.env.REDIRECT_URI,
       state: state
     }));
 });
