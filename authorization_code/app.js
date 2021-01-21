@@ -15,7 +15,8 @@ var cookieParser = require('cookie-parser');
 
 var client_id = process.env.SPOTIFY_CLIENT_ID; // Your client id
 var client_secret = process.env.SPOTIFY_CLIENT_SECRET; // Your secret
-var redirect_uri = process.env.REDIRECT_URI; // Your redirect uri
+var redirect_uri = process.env.REDIRECT_URI || 'http://localhost:8888/callback'; // Your redirect uri
+var port = process.env.PORT || 8888;
 
 /**
  * Generates a random string containing numbers and letters
@@ -46,13 +47,13 @@ app.get('/login', function(req, res) {
   res.cookie(stateKey, state);
 
   // your application requests authorization
-  var scope = 'user-read-private user-read-email';
+  var scope = 'user-read-private user-read-email playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public user-top-read';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
-      client_id: process.env.SPOTIFY_CLIENT_ID,
+      client_id: client_id,
       scope: scope,
-      redirect_uri: process.env.REDIRECT_URI,
+      redirect_uri: redirect_uri,
       state: state
     }));
 });
@@ -104,7 +105,7 @@ app.get('/callback', function(req, res) {
         });
 
         // we can also pass the token to the browser to make requests from there
-        res.redirect('/#' +
+        res.redirect('http://localhost:3000/?' +
           querystring.stringify({
             access_token: access_token,
             refresh_token: refresh_token
@@ -143,5 +144,5 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
-console.log('Listening on 8888');
-app.listen(8888);
+console.log(`Listening on ${port}`);
+app.listen(port);
